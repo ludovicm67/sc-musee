@@ -1,14 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/shm.h>
 #include "musee.h"
 
 void musee_creer(char * program_name, int capacite, int file) {
+  int shmid;
+  struct shm_data * shmaddr;
+
   // on vérifie les arguments
   if (capacite <= 0) usage(program_name, "creer capacite(> 0 !!) file");
   if (file < 0)      usage(program_name, "creer capacite file(>= 0 !!)");
 
-  shm_create();
+  shmid = shm_create();
+
+  // @TODO: tester valeur de retour
+  shmaddr = shmat(shmid, NULL, 0);
+
+  shmaddr->capacite = capacite;
+  shmaddr->file = file;
+
+  sem_creer(1);
 }
 
 void musee_ouvrir(void) {
@@ -21,7 +33,10 @@ void musee_fermer(void) {
 
 void musee_supprimer(void) {
   int shmid = shm_access();
-  if (shmid != -1) shm_delete(shmid);
+  shm_delete(shmid);
+
+  int semid = sem_acceder();
+  sem_supprimer(semid);
 }
 
 
