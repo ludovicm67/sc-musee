@@ -5,11 +5,6 @@
 #include <sys/sem.h>
 #include "musee.h"
 
-// faire une fonction P et V qui fera un P et V pour un sémaphore
-// histoire de rendre le code lisible
-
-
-
 
 // quitte le programme en affichant la manière dont il doit être lancé
 void usage(char * program_name, char * msg) {
@@ -81,6 +76,29 @@ void sem_supprimer(int id) {
   check_error_p(
     semctl(id, 0, IPC_RMID, NULL),
     "semctl"
+  );
+}
+
+
+void P(int id) {
+  struct sembuf s [1] = {
+    {0, -1, 0}
+  };
+
+  check_error_p(
+    semop(id, s, 1),
+    "semop"
+  );
+}
+
+void V(int id) {
+  struct sembuf s [1] = {
+    {0, 1, 0}
+  };
+
+  check_error_p(
+    semop(id, s, 1),
+    "semop"
   );
 }
 

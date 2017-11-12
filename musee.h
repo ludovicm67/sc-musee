@@ -34,6 +34,9 @@ int sem_acceder(void);
 // supprime un ensemble de sémaphores
 void sem_supprimer(int id);
 
+void P(int id);
+void V(int id);
+
 
 // SEGMENTS DE MEMOIRE
 

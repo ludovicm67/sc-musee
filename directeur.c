@@ -20,7 +20,7 @@ void musee_creer(char * program_name, int capacite, int file) {
   shmaddr->capacite = capacite;
   shmaddr->file = file;
 
-  sem_creer(1);
+  sem_creer(0);
 }
 
 void musee_ouvrir(void) {
