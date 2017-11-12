@@ -88,7 +88,7 @@ void sem_supprimer(int id) {
 // SEGMENTS DE MEMOIRE
 
 // créer un segment de mémoire
-int shm_create() {
+int shm_creer() {
 
   key_t k = check_error_p(
     ftok(FTOK_FILENAME, 1),
@@ -107,7 +107,7 @@ int shm_create() {
 }
 
 // accède à un segment de mémoire
-int shm_access(void) {
+int shm_acceder(void) {
 
   key_t k = check_error_p(
     ftok(FTOK_FILENAME, 1),
@@ -122,7 +122,7 @@ int shm_access(void) {
 }
 
 // supprime un segment de mémoire à partir de son id
-void shm_delete(int shmid) {
+void shm_supprimer(int shmid) {
   check_error_p(
     shmctl(shmid, IPC_RMID, NULL),
     "shmctl"

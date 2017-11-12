@@ -12,7 +12,7 @@ void musee_creer(char * program_name, int capacite, int file) {
   if (capacite <= 0) usage(program_name, "creer capacite(> 0 !!) file");
   if (file < 0)      usage(program_name, "creer capacite file(>= 0 !!)");
 
-  shmid = shm_create();
+  shmid = shm_creer();
 
   // @TODO: tester valeur de retour
   shmaddr = shmat(shmid, NULL, 0);
@@ -24,16 +24,16 @@ void musee_creer(char * program_name, int capacite, int file) {
 }
 
 void musee_ouvrir(void) {
-  
+  shm_acceder();
 }
 
 void musee_fermer(void) {
-  
+  shm_acceder();
 }
 
 void musee_supprimer(void) {
-  int shmid = shm_access();
-  shm_delete(shmid);
+  int shmid = shm_acceder();
+  shm_supprimer(shmid);
 
   int semid = sem_acceder();
   sem_supprimer(semid);

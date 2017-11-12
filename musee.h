@@ -38,10 +38,10 @@ void sem_supprimer(int id);
 // SEGMENTS DE MEMOIRE
 
 // créer un segment de mémoire
-int shm_create();
+int shm_creer();
 
 // accède à un segment de mémoire
-int shm_access(void);
+int shm_acceder(void);
 
 // supprime un segment de mémoire à partir de son id
-void shm_delete(int shmid);
+void shm_supprimer(int shmid);
