@@ -3,12 +3,14 @@
 struct shm_data {
   int capacite;
   int file;
+  int est_ouvert;
 };
 
   // int nb_visiteurs;
   // int est_ouvert;
   // int controleur_present;
 
+void debug(int level, char * msg);
 
 // quitte le programme en affichant la manière dont il doit être lancé
 void usage(char * program_name, char * msg);

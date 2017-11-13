@@ -16,9 +16,11 @@ int main(int argc, char * argv[]) {
   if (time < 0) usage(argv[0], "time>=0");
   shm_acceder();
 
+  debug(1, "un visiteur arrive au musée");
   temps_de_visite(time);
   id = sem_acceder();
   V(id);
+  debug(1, "le visiteur a fini sa visite");
 
   return EXIT_SUCCESS;
 }

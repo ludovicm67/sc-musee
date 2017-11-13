@@ -5,6 +5,16 @@
 #include <sys/sem.h>
 #include "musee.h"
 
+void debug(int level, char * msg) {
+  int env_lvl;
+  char * env_debug = getenv("DEBUG_MUSEE");
+  if (env_debug == NULL) return;
+  env_lvl = atoi(env_debug);
+  if (env_lvl >= level) {
+    printf("\033[1;34mDEBUG: %s\033[0m\n", msg);
+    fflush(stdout);
+  }
+}
 
 // quitte le programme en affichant la manière dont il doit être lancé
 void usage(char * program_name, char * msg) {
