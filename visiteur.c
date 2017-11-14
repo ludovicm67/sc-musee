@@ -1,5 +1,7 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <time.h>
+#include <sys/sem.h>
 #include "musee.h"
 
 void temps_de_visite(int ms) {
@@ -16,9 +18,14 @@ int main(int argc, char * argv[]) {
   if (time < 0) usage(argv[0], "time>=0");
   shm_acceder();
 
+  id = sem_acceder();
+int debugSEM = semctl(id, 0, GETNCNT);
+printf("%d\n", debugSEM);
+P(id);
+
+
   debug(1, "un visiteur arrive au musée");
   temps_de_visite(time);
-  id = sem_acceder();
   V(id);
   debug(1, "le visiteur a fini sa visite");
 

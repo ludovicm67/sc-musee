@@ -23,7 +23,7 @@ void musee_creer(char * program_name, int capacite, int file) {
   shmaddr->file = file;
   shmaddr->est_ouvert = 0;
 
-  sem_creer(0);
+  sem_creer(capacite);
 
   debug(2, "le musée a bien été créé !");
 }
