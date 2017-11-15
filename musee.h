@@ -1,9 +1,17 @@
 #define FTOK_FILENAME "musee.c"
 
+enum sem_name {
+  SEM_MUSEE_OUVERT = 1,
+  SEM_MUSEE_ENTRER
+};
+
 struct shm_data {
   int capacite;
   int file;
   int est_ouvert;
+
+  int sem_ouvert;
+  int sem_entrer;
 };
 
   // int nb_visiteurs;
@@ -28,7 +36,7 @@ int check_error_p(int value, char * msg);
 // SEMAPHORES
 
 // créer un ensemble de sémaphores
-int sem_creer(int val);
+int sem_creer(enum sem_name n, int val);
 
 // accède à un ensemble de sémaphores
 int sem_acceder(void);
@@ -46,6 +54,7 @@ void V(int id);
 int shm_creer();
 
 // accède à un segment de mémoire
+int shm_acceder_no_err(void);
 int shm_acceder(void);
 
 // supprime un segment de mémoire à partir de son id

@@ -44,10 +44,10 @@ int check_error_p(int value, char * msg) {
 // SEMAPHORES
 
 // créer un ensemble de sémaphores
-int sem_creer(int val) {
+int sem_creer(enum sem_name n, int val) {
 
   key_t k = check_error_p(
-    ftok(FTOK_FILENAME, 1),
+    ftok(FTOK_FILENAME, n),
     "ftok"
   );
 
@@ -135,18 +135,21 @@ int shm_creer() {
 }
 
 // accède à un segment de mémoire
-int shm_acceder(void) {
-
+// (on ne fait pas le test sur l'existance ici)
+int shm_acceder_no_err(void) {
   key_t k = check_error_p(
     ftok(FTOK_FILENAME, 1),
     "ftok"
   );
+  return shmget(k, 0, 0);
+}
 
+// accède à un segment de mémoire
+int shm_acceder(void) {
   return check_error_p(
-    shmget(k, 0, 0),
+    shm_acceder_no_err(),
     "shmget"
   );
-
 }
 
 // supprime un segment de mémoire à partir de son id
