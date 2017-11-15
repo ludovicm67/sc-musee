@@ -29,14 +29,11 @@ void musee_creer(char * program_name, int capacite, int file) {
 }
 
 void musee_ouvrir(void) {
-  int shmid, s_ouvert;
-  struct shm_data * shmaddr;
+  int s_ouvert;
 
   debug(1, "ouverture du musée");
-  shmid = shm_acceder();
-  shmaddr = shmat(shmid, NULL, 0);
-
-  // besoin du shm ici ?
+  
+  shm_acceder();
 
   s_ouvert = sem_acceder(SEM_MUSEE_OUVERT);
   V(s_ouvert);
@@ -44,13 +41,11 @@ void musee_ouvrir(void) {
 }
 
 void musee_fermer(void) {
-  int shmid, s_ouvert;
-  struct shm_data * shmaddr;
+  int s_ouvert;
 
   debug(1, "fermeture du musée");
-  shmid = shm_acceder();
-  shmaddr = shmat(shmid, NULL, 0);
-
+  
+  shm_acceder();
 
   s_ouvert = sem_acceder(SEM_MUSEE_OUVERT);
   V(s_ouvert);
