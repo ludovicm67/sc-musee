@@ -21,50 +21,53 @@ void musee_creer(char * program_name, int capacite, int file) {
 
   shmaddr->capacite = capacite;
   shmaddr->file = file;
-  shmaddr->est_ouvert = 0;
 
-  shmaddr->sem_entrer = sem_creer(SEM_MUSEE_ENTRER, capacite);
+  shmaddr->sem_entrer = sem_creer(SEM_MUSEE_ENTRER, 0);
   shmaddr->sem_ouvert = sem_creer(SEM_MUSEE_OUVERT, 0);
 
   debug(2, "le musée a bien été créé !");
 }
 
 void musee_ouvrir(void) {
-  int shmid;
+  int shmid, s_ouvert;
   struct shm_data * shmaddr;
 
   debug(1, "ouverture du musée");
   shmid = shm_acceder();
   shmaddr = shmat(shmid, NULL, 0);
-  shmaddr->est_ouvert = 1;
+
+  // besoin du shm ici ?
+
+  s_ouvert = sem_acceder(SEM_MUSEE_OUVERT);
+  V(s_ouvert);
   debug(2, "le musée a bien été ouvert !");
 }
 
 void musee_fermer(void) {
-  int shmid;
+  int shmid, s_ouvert;
   struct shm_data * shmaddr;
 
   debug(1, "fermeture du musée");
   shmid = shm_acceder();
   shmaddr = shmat(shmid, NULL, 0);
-  shmaddr->est_ouvert = 0;
+
+
+  s_ouvert = sem_acceder(SEM_MUSEE_OUVERT);
+  V(s_ouvert);
   debug(2, "le musée a bien été fermé !");
 }
 
 void musee_supprimer(void) {
   int shmid;
+  struct shm_data * shmaddr;
 
   debug(1, "suppression du musée");
 
-  debug(4, "lancement de la suppression des segments de mémoire...");
   shmid = shm_acceder();
+  shmaddr = shmat(shmid, NULL, 0);
+  sem_supprimer(shmaddr->sem_ouvert);
+  sem_supprimer(shmaddr->sem_entrer);
   shm_supprimer(shmid);
-  debug(3, "suppression des segments de mémoire terminé !");
-  debug(4, "lancement de la suppression des sémaphores...");
-  int semid = sem_acceder();
-  sem_supprimer(semid);
-  debug(3, "suppression des sémaphores terminé !");
-  debug(2, "suppression du musée terminé !");
 }
 
 

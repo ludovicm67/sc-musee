@@ -11,8 +11,8 @@ void debug(int level, char * msg) {
   if (env_debug == NULL) return;
   env_lvl = atoi(env_debug);
   if (env_lvl >= level) {
-    printf("\033[1;34mDEBUG: %s\033[0m\n", msg);
-    fflush(stdout);
+    fprintf(stderr, "\033[1;34mDEBUG: %s\033[0m\n", msg);
+    fflush(stderr);
   }
 }
 
@@ -66,10 +66,10 @@ int sem_creer(enum sem_name n, int val) {
 }
 
 // accède à un ensemble de sémaphores
-int sem_acceder(void) {
+int sem_acceder(enum sem_name n) {
 
   key_t k = check_error_p(
-    ftok(FTOK_FILENAME, 1),
+    ftok(FTOK_FILENAME, n),
     "ftok"
   );
 
@@ -78,6 +78,14 @@ int sem_acceder(void) {
     "semget"
   );
 
+}
+
+// Permet de changer la valeur d'un sémaphore
+void sem_set_value(int id, int val) {
+  check_error_p(
+    semctl(id, 0, SETVAL, val),
+    "semctl setval"
+  );
 }
 
 
