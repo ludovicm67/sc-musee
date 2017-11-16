@@ -80,13 +80,13 @@ int main(int argc, char * argv[]) {
         musee_supprimer();
         break;
       }
-      __attribute__ ((fallthrough));
+      // fall through
     case 4:
       if (argc == 4 && !strcmp(argv[1], "creer")) {
         musee_creer(argv[0], atoi(argv[2]), atoi(argv[3]));
         break;
       }
-      __attribute__ ((fallthrough));
+      // fall through
     default:
       usage(argv[0], "[creer capacite file | ouvrir | fermer | supprimer]");
   }
