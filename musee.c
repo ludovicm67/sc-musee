@@ -88,6 +88,14 @@ void sem_set_value(int id, int val) {
   );
 }
 
+// Permet de récupérer la valeur d'un sémaphore
+int sem_get_value(int id) {
+  return check_error_p(
+    semctl(id, 0, GETVAL),
+    "semctl setval"
+  );
+}
+
 
 // supprime un ensemble de sémaphores
 void sem_supprimer(int id) {

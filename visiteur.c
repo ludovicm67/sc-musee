@@ -15,7 +15,7 @@ void temps_de_visite(int ms) {
 }
 
 int main(int argc, char * argv[]) {
-  int time, shmid, nb_visiteurs_dans_file;
+  int time, shmid, nb_visiteurs_dans_file, nb_dans_musee, s_ouvert;
   struct shm_data * shmaddr;
 
   if (argc != 2) usage(argv[0], "time");
@@ -23,6 +23,8 @@ int main(int argc, char * argv[]) {
   if (time < 0) usage(argv[0], "time>=0");
 
   shmid = shm_acceder();
+
+  s_ouvert = sem_acceder(SEM_MUSEE_OUVERT);
 
   // @TODO: tester valeur de retour
   shmaddr = shmat(shmid, NULL, 0);
@@ -41,7 +43,12 @@ int main(int argc, char * argv[]) {
     debug(2, "Le visiteur entre dans le musée");
     temps_de_visite(time);
     debug(2, "Le visiteur a fini la visite du musée");
-    V(shmaddr->sem_entrer);
+    if (shmaddr->est_ouvert) V(shmaddr->sem_entrer);
+    else { // si le musee est fermé
+      nb_dans_musee = sem_get_value(shmaddr->sem_entrer);
+      // et s'il n'y a plus personne, on indique au controleur qu'il peut partir
+      if (!nb_dans_musee) V(s_ouvert);
+    }
     debug(2, "Le visiteur est sorti du musée.");
   }
 

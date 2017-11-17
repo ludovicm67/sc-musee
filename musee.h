@@ -8,6 +8,7 @@ enum sem_name {
 struct shm_data {
   int capacite;
   int file;
+  int est_ouvert;
 
   int sem_ouvert;
   int sem_entrer;
@@ -41,6 +42,7 @@ int sem_creer(enum sem_name n, int val);
 int sem_acceder(enum sem_name n);
 
 void sem_set_value(int id, int val);
+int sem_get_value(int id);
 
 // supprime un ensemble de sémaphores
 void sem_supprimer(int id);
