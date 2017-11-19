@@ -1,19 +1,23 @@
 #define FTOK_FILENAME "musee.c"
 
+// juste pour rendre le code plus beau à lire
 enum sem_name {
-  SEM_MUSEE_OUVERT = 1,
-  SEM_MUSEE_ENTRER
+  SEM_MUSEE_CONTROLEUR = 1,
+  SEM_MUSEE_VISITEURS,
+  SEM_MUSEE_LASTS
 };
 
 struct shm_data {
-  int capacite;
-  int file;
-  int est_ouvert;
+  int capacite; // argument capa passé lors de la création
+  int file; // argument file passé lors de la création
+  int est_ouvert; // 0 = fermé, 1 = ouvert
 
-  int sem_visiteurs;
-  int sem_controleur;
+  int sem_controleur; // pour réveiller le controleur
+  int sem_visiteurs; // pour gérer les visiteurs et le file (en attente dessus)
+  int sem_lasts; // les derniers visiteurs
 };
 
+// permet d'afficher les messages de debug en fonction de DEBUG_MUSEE
 void debug(int level, char * msg);
 
 // quitte le programme en affichant la manière dont il doit être lancé

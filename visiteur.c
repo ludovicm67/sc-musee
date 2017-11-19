@@ -44,10 +44,12 @@ int main(int argc, char * argv[]) {
       V(shmaddr->sem_visiteurs);
     } else { // si le musee est fermé
       debug(3, "Le visiteur va vers la sortie du musée qui est fermé");
-      nb_dans_musee = shmaddr->capacite - sem_get_value(shmaddr->sem_visiteurs);
+      debug(3, "sort par le portique...");
+      P(shmaddr->sem_lasts);
+      nb_dans_musee = sem_get_value(shmaddr->sem_lasts);
+
       // et s'il n'y a plus personne, on indique au controleur qu'il peut partir
       if (nb_dans_musee <= 1) {
-        debug(3, "Sort par le portique...");
         debug(3, "...qui dit au controleur que c'était le dernier visiteur");
         V(shmaddr->sem_controleur);
         debug(3, "le controleur peut donc rentrer chez lui !");

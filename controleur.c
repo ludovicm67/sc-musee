@@ -20,7 +20,8 @@ int main(int argc, char * argv[]) {
 
   P(shmaddr->sem_controleur); // lorsque le directeur déclare le musée fermé
   nb_dans_musee = shmaddr->capacite - sem_get_value(shmaddr->sem_visiteurs);
-  sem_set_value(shmaddr->sem_visiteurs, 0);
+  sem_set_value(shmaddr->sem_visiteurs, 0); // on bloque l'entrée
+  sem_set_value(shmaddr->sem_lasts, nb_dans_musee + 1);
 
   // attends qu'il n'y ait plus de visiteurs s'il y en a encore
   if (nb_dans_musee) P(shmaddr->sem_controleur);

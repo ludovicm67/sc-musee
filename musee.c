@@ -5,6 +5,7 @@
 #include <sys/sem.h>
 #include "musee.h"
 
+// permet d'afficher les messages de debug en fonction de DEBUG_MUSEE
 void debug(int level, char * msg) {
   int env_lvl;
   char * env_debug = getenv("DEBUG_MUSEE");

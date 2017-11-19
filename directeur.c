@@ -23,8 +23,9 @@ void musee_creer(char * program_name, int capacite, int file) {
   shmaddr->file = file;
   shmaddr->est_ouvert = 0;
 
-  shmaddr->sem_controleur = sem_creer(SEM_MUSEE_OUVERT, 0);
-  shmaddr->sem_visiteurs = sem_creer(SEM_MUSEE_ENTRER, 0);
+  shmaddr->sem_controleur = sem_creer(SEM_MUSEE_CONTROLEUR, 0);
+  shmaddr->sem_visiteurs = sem_creer(SEM_MUSEE_VISITEURS, 0);
+  shmaddr->sem_lasts = sem_creer(SEM_MUSEE_LASTS, 0);
 
   debug(2, "le musée a bien été créé !");
 }
@@ -77,6 +78,7 @@ void musee_supprimer(void) {
   if ((shmaddr = shmat(shmid, NULL, 0)) == (void *) -1) error("shmat a échoué");
   sem_supprimer(shmaddr->sem_controleur);
   sem_supprimer(shmaddr->sem_visiteurs);
+  sem_supprimer(shmaddr->sem_lasts);
   shm_supprimer(shmid);
 }
 

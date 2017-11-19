@@ -23,8 +23,7 @@ $V ./directeur ouvrir >&2 || fail "erreur d'ouverture"
 $V ./directeur ouvrir >&2 && fail "musée déjà ouvert !"
 $V ./visiteur 1000 &
 $V ./visiteur 1000 &
-$V ./visiteur 1000 &
-$V ./visiteur 1000 &
+sleep 0.5
 $V ./directeur fermer >&2 || fail "erreur de fermeture"
 sleep 2
 $V ./dump >&2 || fail "erreur lors du debug"
