@@ -23,14 +23,14 @@ void musee_creer(char * program_name, int capacite, int file) {
   shmaddr->file = file;
   shmaddr->est_ouvert = 0;
 
-  shmaddr->sem_entrer = sem_creer(SEM_MUSEE_ENTRER, 0);
-  shmaddr->sem_ouvert = sem_creer(SEM_MUSEE_OUVERT, 0);
+  shmaddr->sem_controleur = sem_creer(SEM_MUSEE_OUVERT, 0);
+  shmaddr->sem_visiteurs = sem_creer(SEM_MUSEE_ENTRER, 0);
 
   debug(2, "le musée a bien été créé !");
 }
 
 void musee_ouvrir(void) {
-  int shmid, s_ouvert;
+  int shmid;
   struct shm_data * shmaddr;
 
   debug(1, "ouverture du musée");
@@ -40,13 +40,12 @@ void musee_ouvrir(void) {
   if (shmaddr->est_ouvert) error("Le musée est déjà ouvert !");
   shmaddr->est_ouvert = 1;
 
-  s_ouvert = sem_acceder(SEM_MUSEE_OUVERT);
-  V(s_ouvert);
+  V(shmaddr->sem_controleur);
   debug(2, "le musée a bien été ouvert !");
 }
 
 void musee_fermer(void) {
-  int shmid, s_ouvert;
+  int shmid;
   struct shm_data * shmaddr;
 
   debug(1, "fermeture du musée");
@@ -56,8 +55,7 @@ void musee_fermer(void) {
   if (!shmaddr->est_ouvert) error("Le musée n'a pas encore été ouvert !");
   shmaddr->est_ouvert = 0;
 
-  s_ouvert = sem_acceder(SEM_MUSEE_OUVERT);
-  V(s_ouvert);
+  V(shmaddr->sem_controleur);
   debug(2, "le musée a bien été fermé !");
 }
 
@@ -69,8 +67,8 @@ void musee_supprimer(void) {
 
   shmid = shm_acceder();
   shmaddr = shmat(shmid, NULL, 0);
-  sem_supprimer(shmaddr->sem_ouvert);
-  sem_supprimer(shmaddr->sem_entrer);
+  sem_supprimer(shmaddr->sem_controleur);
+  sem_supprimer(shmaddr->sem_visiteurs);
   shm_supprimer(shmid);
 }
 

@@ -65,21 +65,6 @@ int sem_creer(enum sem_name n, int val) {
 
 }
 
-// accède à un ensemble de sémaphores
-int sem_acceder(enum sem_name n) {
-
-  key_t k = check_error_p(
-    ftok(FTOK_FILENAME, n),
-    "ftok"
-  );
-
-  return check_error_p(
-    semget(k, 0, 0),
-    "semget"
-  );
-
-}
-
 // Permet de changer la valeur d'un sémaphore
 void sem_set_value(int id, int val) {
   check_error_p(

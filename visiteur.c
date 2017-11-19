@@ -5,8 +5,7 @@
 #include <sys/shm.h>
 #include "musee.h"
 
-// export DEBUG_MUSEE=42 && ./visiteur 10000
-
+// fonction qui permet de faire attendre le visiteurs un temps en ms
 void temps_de_visite(int ms) {
   struct timespec ts;
   ts.tv_sec = (time_t) (ms / 1000);
@@ -15,7 +14,7 @@ void temps_de_visite(int ms) {
 }
 
 int main(int argc, char * argv[]) {
-  int time, shmid, nb_visiteurs_dans_file, nb_dans_musee, s_ouvert;
+  int time, shmid, nb_visiteurs_dans_file, nb_dans_musee;
   struct shm_data * shmaddr;
 
   if (argc != 2) usage(argv[0], "time");
@@ -24,13 +23,11 @@ int main(int argc, char * argv[]) {
 
   shmid = shm_acceder();
 
-  s_ouvert = sem_acceder(SEM_MUSEE_OUVERT);
-
   // @TODO: tester valeur de retour
   shmaddr = shmat(shmid, NULL, 0);
 
   nb_visiteurs_dans_file = check_error_p(
-    semctl(shmaddr->sem_entrer, 0, GETNCNT),
+    semctl(shmaddr->sem_visiteurs, 0, GETNCNT),
     "semctl"
   );
 
@@ -39,15 +36,23 @@ int main(int argc, char * argv[]) {
     debug(2, "Le visiteur n'avait pas envie de faire la file");
   } else {
     debug(2, "Le visiteur entre dans la file");
-    P(shmaddr->sem_entrer);
+    P(shmaddr->sem_visiteurs);
     debug(2, "Le visiteur entre dans le musée");
     temps_de_visite(time);
     debug(2, "Le visiteur a fini la visite du musée");
-    if (shmaddr->est_ouvert) V(shmaddr->sem_entrer);
-    else { // si le musee est fermé
-      nb_dans_musee = shmaddr->capacite - sem_get_value(shmaddr->sem_entrer);
+    if (shmaddr->est_ouvert) { // si le musée est ouvert
+      debug(3, "Le visiteur passe par le portique ce qui libère une place");
+      V(shmaddr->sem_visiteurs);
+    } else { // si le musee est fermé
+      debug(3, "Le visiteur va vers la sortie du musée qui est fermé");
+      nb_dans_musee = shmaddr->capacite - sem_get_value(shmaddr->sem_visiteurs);
       // et s'il n'y a plus personne, on indique au controleur qu'il peut partir
-      if (nb_dans_musee <= 1) V(s_ouvert);
+      if (nb_dans_musee <= 1) {
+        debug(3, "Sort par le portique...");
+        debug(3, "...qui dit au controleur que c'était le dernier visiteur");
+        V(shmaddr->sem_controleur);
+        debug(3, "le controleur peut donc rentrer chez lui !");
+      }
     }
     debug(2, "Le visiteur est sorti du musée.");
   }

@@ -10,13 +10,9 @@ struct shm_data {
   int file;
   int est_ouvert;
 
-  int sem_ouvert;
-  int sem_entrer;
+  int sem_visiteurs;
+  int sem_controleur;
 };
-
-  // int nb_visiteurs;
-  // int est_ouvert;
-  // int controleur_present;
 
 void debug(int level, char * msg);
 
@@ -34,17 +30,9 @@ int check_error_p(int value, char * msg);
 
 
 // SEMAPHORES
-
-// créer un ensemble de sémaphores
 int sem_creer(enum sem_name n, int val);
-
-// accède à un ensemble de sémaphores
-int sem_acceder(enum sem_name n);
-
 void sem_set_value(int id, int val);
 int sem_get_value(int id);
-
-// supprime un ensemble de sémaphores
 void sem_supprimer(int id);
 
 void P(int id);
