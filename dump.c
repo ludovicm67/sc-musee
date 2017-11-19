@@ -12,16 +12,15 @@ int main(int argc, char * argv[]) {
   shmid = shm_acceder_no_err();
 
   // je ne teste que le segment de mémoire
-  if (shmid == -1) {
-    printf("Le musée est inexistant.\n");
-    return EXIT_SUCCESS;
-  }
+  if (shmid == -1) error("Le musée est inexistant.");
 
-  // @TODO: tester valeur de retour
-  shmaddr = shmat(shmid, NULL, 0);
-
-  printf("FILE=%d\n", shmaddr->file);
-  printf("CAPA=%d\n", shmaddr->capacite);
+  if ((shmaddr = shmat(shmid, NULL, 0)) == (void *) -1) error("shmat a échoué");
+  printf("CONTENU DU SHM:\n");
+  printf(" - file = %d\n", shmaddr->file);
+  printf(" - capacite = %d\n", shmaddr->capacite);
+  printf(" - est_ouvert = %d\n", shmaddr->est_ouvert);
+  printf(" - sem_controleur = %d\n", shmaddr->sem_controleur);
+  printf(" - sem_visiteurs = %d\n\n\n", shmaddr->sem_visiteurs);
 
 
   return EXIT_SUCCESS;

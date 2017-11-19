@@ -13,7 +13,7 @@ int main(int argc, char * argv[]) {
   debug(1, "le contrôleur est en poste");
   
   shmid = shm_acceder();
-  shmaddr = shmat(shmid, NULL, 0);
+  if ((shmaddr = shmat(shmid, NULL, 0)) == (void *) -1) error("shmat a échoué");
 
   P(shmaddr->sem_controleur); // est-ce qu'il peut faire entrer des gens ?
   sem_set_value(shmaddr->sem_visiteurs, shmaddr->capacite);

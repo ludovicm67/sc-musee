@@ -23,8 +23,7 @@ int main(int argc, char * argv[]) {
 
   shmid = shm_acceder();
 
-  // @TODO: tester valeur de retour
-  shmaddr = shmat(shmid, NULL, 0);
+  if ((shmaddr = shmat(shmid, NULL, 0)) == (void *) -1) error("shmat a échoué");
 
   nb_visiteurs_dans_file = check_error_p(
     semctl(shmaddr->sem_visiteurs, 0, GETNCNT),
