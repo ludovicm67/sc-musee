@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/shm.h>
-#include <sys/sem.h>
 #include "musee.h"
 
+// créer le musée
 void musee_creer(char * program_name, int capacite, int file) {
   int shmid;
   struct shm_data * shmaddr;
@@ -16,8 +15,7 @@ void musee_creer(char * program_name, int capacite, int file) {
   debug(1, "création du musée");
 
   shmid = shm_creer();
-
-  if ((shmaddr = shmat(shmid, NULL, 0)) == (void *) -1) error("shmat a échoué");
+  shmaddr = shm_at(shmid);
 
   shmaddr->capacite = capacite;
   shmaddr->file = file;
@@ -30,6 +28,7 @@ void musee_creer(char * program_name, int capacite, int file) {
   debug(2, "le musée a bien été créé !");
 }
 
+// ouvre le musée
 void musee_ouvrir(void) {
   int shmid, is_controleur;
   struct shm_data * shmaddr;
@@ -37,14 +36,10 @@ void musee_ouvrir(void) {
   debug(1, "ouverture du musée");
   
   shmid = shm_acceder();
-  if ((shmaddr = shmat(shmid, NULL, 0)) == (void *) -1) error("shmat a échoué");
+  shmaddr = shm_at(shmid);
   if (shmaddr->est_ouvert) error("Le musée est déjà ouvert !");
 
-  is_controleur = check_error_p(
-    semctl(shmaddr->sem_controleur, 0, GETNCNT),
-    "semctl"
-  );
-
+  is_controleur = sem_nb_attente(shmaddr->sem_controleur);
   if (!is_controleur) error("Le contrôleur n'est pas encore en poste !");
 
   shmaddr->est_ouvert = 1;
@@ -53,6 +48,7 @@ void musee_ouvrir(void) {
   debug(2, "le musée a bien été ouvert !");
 }
 
+// ferme le musée
 void musee_fermer(void) {
   int shmid;
   struct shm_data * shmaddr;
@@ -60,7 +56,7 @@ void musee_fermer(void) {
   debug(1, "fermeture du musée");
   
   shmid = shm_acceder();
-  if ((shmaddr = shmat(shmid, NULL, 0)) == (void *) -1) error("shmat a échoué");
+  shmaddr = shm_at(shmid);
   if (!shmaddr->est_ouvert) error("Le musée n'a pas encore été ouvert !");
   shmaddr->est_ouvert = 0;
 
@@ -68,6 +64,7 @@ void musee_fermer(void) {
   debug(2, "le musée a bien été fermé !");
 }
 
+// supprime le musée
 void musee_supprimer(void) {
   int shmid;
   struct shm_data * shmaddr;
@@ -75,7 +72,7 @@ void musee_supprimer(void) {
   debug(1, "suppression du musée");
 
   shmid = shm_acceder();
-  if ((shmaddr = shmat(shmid, NULL, 0)) == (void *) -1) error("shmat a échoué");
+  shmaddr = shm_at(shmid);
   sem_supprimer(shmaddr->sem_controleur);
   sem_supprimer(shmaddr->sem_visiteurs);
   sem_supprimer(shmaddr->sem_lasts);

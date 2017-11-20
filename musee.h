@@ -38,6 +38,7 @@ int sem_creer(enum sem_name n, int val);
 void sem_set_value(int id, int val);
 int sem_get_value(int id);
 void sem_supprimer(int id);
+int sem_nb_attente(int id);
 
 void P(int id);
 void V(int id);
@@ -51,6 +52,9 @@ int shm_creer();
 // accède à un segment de mémoire
 int shm_acceder_no_err(void);
 int shm_acceder(void);
+
+// attache un segment de mémoire
+struct shm_data * shm_at(int shmid);
 
 // supprime un segment de mémoire à partir de son id
 void shm_supprimer(int shmid);

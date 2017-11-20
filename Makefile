@@ -50,10 +50,10 @@ gcov:
 
 test: test-sans-valgrind
 
-test-sans-valgrind: all
+test-sans-valgrind: clean all
 	@for i in test-*.sh ; do echo $$i ; sh $$i || exit 1 ; done
 
-test-avec-valgrind: all
+test-avec-valgrind: clean all
 	VALGRIND="valgrind -q" ; export VALGRIND ; \
 	    for i in test-*.sh ; do echo $$i ; sh $$i || exit 1 ; done
 

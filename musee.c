@@ -91,6 +91,14 @@ void sem_supprimer(int id) {
   );
 }
 
+// nombre de ps en attente sur un sémaphore
+int sem_nb_attente(int id) {
+  return check_error_p(
+    semctl(id, 0, GETNCNT),
+    "semctl"
+  );
+}
+
 
 void P(int id) {
   struct sembuf s [1] = {
@@ -152,6 +160,13 @@ int shm_acceder(void) {
     shm_acceder_no_err(),
     "shmget"
   );
+}
+
+// attache un segment de mémoire
+struct shm_data * shm_at(int shmid) {
+  struct shm_data * shmaddr;
+  if ((shmaddr = shmat(shmid, NULL, 0)) == (void *) -1) error("shmat a échoué");
+  return shmaddr;
 }
 
 // supprime un segment de mémoire à partir de son id

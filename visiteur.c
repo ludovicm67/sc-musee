@@ -1,8 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include <sys/sem.h>
-#include <sys/shm.h>
 #include "musee.h"
 
 // fonction qui permet de faire attendre le visiteurs un temps en ms
@@ -22,13 +20,9 @@ int main(int argc, char * argv[]) {
   if (time < 0) usage(argv[0], "time>=0");
 
   shmid = shm_acceder();
+  shmaddr = shm_at(shmid);
 
-  if ((shmaddr = shmat(shmid, NULL, 0)) == (void *) -1) error("shmat a échoué");
-
-  nb_visiteurs_dans_file = check_error_p(
-    semctl(shmaddr->sem_visiteurs, 0, GETNCNT),
-    "semctl"
-  );
+  nb_visiteurs_dans_file = sem_nb_attente(shmaddr->sem_visiteurs);
 
   debug(1, "Le visiteur arrive en direction du musée");
   if (nb_visiteurs_dans_file >= shmaddr->file) {

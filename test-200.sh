@@ -19,6 +19,7 @@ $V ./directeur creer 3 2 >&2 || fail "erreur de création"
 $V ./directeur ouvrir >&2 && fail "ne peut pas ouvrir sans controleur"
 $V ./directeur fermer >&2 && fail "ne peut pas fermer un musée non ouvert !"
 $V ./controleur& >&2 || fail "le controleur n'a pas pu se lancer correctement."
+sleep 0.1
 $V ./directeur ouvrir >&2 || fail "erreur d'ouverture"
 $V ./directeur ouvrir >&2 && fail "musée déjà ouvert !"
 $V ./visiteur 1000 &
