@@ -33,7 +33,6 @@ void musee_ouvrir(void) {
   int shmid, is_controleur;
   struct shm_data * shmaddr;
 
-  debug(1, "ouverture du musée");
   
   shmid = shm_acceder();
   shmaddr = shm_at(shmid);
@@ -42,6 +41,7 @@ void musee_ouvrir(void) {
   is_controleur = sem_nb_attente(shmaddr->sem_controleur);
   if (!is_controleur) error("Le contrôleur n'est pas encore en poste !");
 
+  debug(1, "ouverture du musée");
   shmaddr->est_ouvert = 1;
 
   V(shmaddr->sem_controleur);
