@@ -5,6 +5,5 @@ dump
 musee.o
 *.swp
 *.log
-*.gcov
-*.gcda
-*.gcno
+*.gc*
+*.pdf

@@ -67,3 +67,9 @@ clean:
 	rm -f *.gc*
 	rm -f *.log
 	rm -f tags core
+
+.PHONY: rapport
+rapport: rapport.pdf
+
+rapport.pdf: rapport.md
+	pandoc rapport.md -o rapport.pdf

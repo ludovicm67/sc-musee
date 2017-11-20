@@ -13,7 +13,7 @@ struct shm_data {
   int est_ouvert; // 0 = fermé, 1 = ouvert
 
   int sem_controleur; // pour réveiller le controleur
-  int sem_visiteurs; // pour gérer les visiteurs et le file (en attente dessus)
+  int sem_visiteurs; // pour gérer les visiteurs et la file (en attente dessus)
   int sem_lasts; // les derniers visiteurs
 };
 
